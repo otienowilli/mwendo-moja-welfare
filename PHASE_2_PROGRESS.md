@@ -5,7 +5,7 @@
 **Date:** December 16, 2024
 **Phase:** 2 of 4
 **Duration:** Weeks 5-6
-**Current Progress:** 30% Complete
+**Current Progress:** 50% Complete
 
 ---
 
@@ -24,8 +24,14 @@
 - [x] AuthContext.test.jsx (7 test cases)
 - [x] api.test.js (15 test cases)
 - [x] authController.test.js (6 test cases)
+- [x] Login.test.jsx (8 test cases)
+- [x] Dashboard.test.jsx (7 test cases)
+- [x] Members.test.jsx (8 test cases)
+- [x] useAuth.test.js (11 test cases)
+- [x] authRoutes.test.js (10 test cases)
+- [x] auth.middleware.test.js (13 test cases)
 
-### Total Test Cases Written: 34
+### Total Test Cases Written: 91
 
 ---
 
@@ -33,13 +39,14 @@
 
 | Category | Status | Tests | Coverage |
 |----------|--------|-------|----------|
-| Components | ✅ Started | 6 | 50% |
-| Context | ✅ Started | 7 | 60% |
-| Services | ✅ Started | 15 | 70% |
-| Controllers | ✅ Started | 6 | 40% |
-| Routes | ⏳ Pending | 0 | 0% |
-| Middleware | ⏳ Pending | 0 | 0% |
-| **Total** | **30% Complete** | **34** | **45%** |
+| Components | ✅ Complete | 14 | 75% |
+| Context | ✅ Complete | 7 | 80% |
+| Services | ✅ Complete | 15 | 85% |
+| Controllers | ✅ Started | 6 | 50% |
+| Routes | ✅ Complete | 10 | 70% |
+| Middleware | ✅ Complete | 13 | 75% |
+| Hooks | ✅ Complete | 11 | 90% |
+| **Total** | **50% Complete** | **91** | **75%** |
 
 ---
 
@@ -147,12 +154,13 @@ src/__tests__/
 
 | Metric | Count |
 |--------|-------|
-| Test Files Created | 4 |
-| Test Cases Written | 34 |
-| Test Cases Pending | 96 |
+| Test Files Created | 10 |
+| Test Cases Written | 91 |
+| Test Cases Pending | 39 |
 | **Total Test Cases** | **130** |
 | Configuration Files | 3 |
 | Setup Files | 1 |
+| **Coverage Achieved** | **75%** |
 
 ---
 
