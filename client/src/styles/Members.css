@@ -1,0 +1,98 @@
+.members-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.members-container h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.add-member-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  transition: transform 0.2s;
+}
+
+.add-member-btn:hover {
+  transform: translateY(-2px);
+}
+
+.member-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.member-form input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.member-form input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.1);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  grid-column: 1 / -1;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+.members-table {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.members-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.members-table th {
+  background-color: #f5f5f5;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.members-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.members-table tr:hover {
+  background-color: #f9f9f9;
+}
+
