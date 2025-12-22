@@ -1,4 +1,3 @@
-const { describe, it, expect, beforeEach, jest } = require('@jest/globals')
 const request = require('supertest')
 
 describe('Auth Routes', () => {

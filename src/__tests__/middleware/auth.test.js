@@ -1,4 +1,3 @@
-const { describe, it, expect, beforeEach, jest } = require('@jest/globals')
 const { createMocks } = require('node-mocks-http')
 
 describe('Auth Middleware', () => {
@@ -43,7 +42,7 @@ describe('Auth Middleware', () => {
     })
 
     it('should validate token format', () => {
-      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
       const invalidToken = 'invalid'
 
       expect(validToken.split('.').length).toBe(3)

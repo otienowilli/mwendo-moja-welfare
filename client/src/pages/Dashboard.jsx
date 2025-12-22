@@ -2,16 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
+import { MembersChart, ContributionsChart, LoansChart } from '../components/Charts';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
-  const { user, token, logout } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalMembers: 0,
     totalContributions: 0,
     totalLoans: 0,
     pendingLoans: 0,
+  });
+  const [chartData, setChartData] = useState({
+    members: { active: 0, inactive: 0 },
+    contributions: [],
+    loans: [],
   });
   const [loading, setLoading] = useState(true);
 
@@ -32,11 +38,24 @@ const Dashboard = () => {
         api.getLoans(token),
       ]);
 
+      const membersData = members.data || [];
+      const contributionsData = contributions.data || [];
+      const loansData = loans.data || [];
+
       setStats({
-        totalMembers: members.data?.length || 0,
-        totalContributions: contributions.data?.length || 0,
-        totalLoans: loans.data?.length || 0,
-        pendingLoans: loans.data?.filter(l => l.status === 'pending').length || 0,
+        totalMembers: membersData.length,
+        totalContributions: contributionsData.length,
+        totalLoans: loansData.length,
+        pendingLoans: loansData.filter(l => l.status === 'pending').length,
+      });
+
+      setChartData({
+        members: {
+          active: membersData.filter(m => m.status === 'active').length,
+          inactive: membersData.filter(m => m.status !== 'active').length,
+        },
+        contributions: contributionsData,
+        loans: loansData,
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -45,20 +64,12 @@ const Dashboard = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
   return (
     <div className="dashboard-container">
-      <nav className="navbar">
-        <div className="navbar-brand">MWENDO MOJA</div>
-        <div className="navbar-user">
-          <span>{user?.name || 'User'}</span>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
-        </div>
-      </nav>
+      <div className="dashboard-header">
+        <h1>Welcome, {user?.full_name || user?.name || 'User'}!</h1>
+        <p>Here's your welfare group overview</p>
+      </div>
 
       <div className="dashboard-content">
         <h1>Dashboard</h1>
@@ -100,6 +111,26 @@ const Dashboard = () => {
             View Reports
           </button>
         </div>
+
+        {!loading && (
+          <div className="charts-section">
+            <h2>Analytics</h2>
+            <div className="charts-grid">
+              <div className="chart-card">
+                <h3>Member Status</h3>
+                <MembersChart data={chartData.members} />
+              </div>
+              <div className="chart-card">
+                <h3>Contributions Trend</h3>
+                <ContributionsChart data={chartData.contributions} />
+              </div>
+              <div className="chart-card">
+                <h3>Loan Status Distribution</h3>
+                <LoansChart data={chartData.loans} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

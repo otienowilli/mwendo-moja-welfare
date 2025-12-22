@@ -1,0 +1,63 @@
+/* Loans page styles */
+.filter-select {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.1);
+}
+
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .filter-select {
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .members-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-input,
+  .filter-select,
+  .add-member-btn {
+    width: 100%;
+  }
+
+  .error-message {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-select {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .error-message {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+

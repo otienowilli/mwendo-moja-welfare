@@ -7,7 +7,10 @@ import Members from './pages/Members';
 import Contributions from './pages/Contributions';
 import Loans from './pages/Loans';
 import Reports from './pages/Reports';
+import Profile from './pages/Profile';
+import MyLoans from './pages/MyLoans';
 import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/Layout';
 import './App.css';
 
 function App() {
@@ -21,7 +24,9 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
             }
           />
@@ -29,7 +34,9 @@ function App() {
             path="/members"
             element={
               <ProtectedRoute>
-                <Members />
+                <Layout>
+                  <Members />
+                </Layout>
               </ProtectedRoute>
             }
           />
@@ -37,7 +44,9 @@ function App() {
             path="/contributions"
             element={
               <ProtectedRoute>
-                <Contributions />
+                <Layout>
+                  <Contributions />
+                </Layout>
               </ProtectedRoute>
             }
           />
@@ -45,7 +54,9 @@ function App() {
             path="/loans"
             element={
               <ProtectedRoute>
-                <Loans />
+                <Layout>
+                  <Loans />
+                </Layout>
               </ProtectedRoute>
             }
           />
@@ -53,7 +64,29 @@ function App() {
             path="/reports"
             element={
               <ProtectedRoute>
-                <Reports />
+                <Layout>
+                  <Reports />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Profile />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-loans"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <MyLoans />
+                </Layout>
               </ProtectedRoute>
             }
           />

@@ -22,7 +22,12 @@ const dividendRoutes = require('./routes/dividendRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -47,9 +52,9 @@ const initializeDatabase = async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connection established');
-    
-    // Sync models with database
-    await sequelize.sync({ alter: process.env.NODE_ENV === 'development' });
+
+    // Sync models with database (don't alter tables, just create if missing)
+    await sequelize.sync({ force: false, alter: false });
     console.log('Database models synchronized');
   } catch (error) {
     console.error('Database initialization error:', error);

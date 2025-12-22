@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 
 const generateToken = (user) => {
@@ -67,10 +68,14 @@ const register = async (req, res) => {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
+    // Hash password before creating user
+    const salt = await bcrypt.genSalt(10);
+    const password_hash = await bcrypt.hash(password, salt);
+
     const user = await User.create({
       username,
       email,
-      password,
+      password_hash,
       full_name,
       role: role || 'secretary',
       is_active: true,

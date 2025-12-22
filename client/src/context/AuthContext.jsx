@@ -21,15 +21,21 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await api.login(email, password);
-      if (response.success) {
+      // Check if response has an error field (API returns error on failure)
+      if (response.error) {
+        setError(response.error);
+        return { success: false, message: response.error };
+      }
+      // Check if response has a token (successful login)
+      if (response.token) {
         setToken(response.token);
         setUser(response.user);
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
-        return response;
+        return { success: true, message: 'Login successful', token: response.token, user: response.user };
       } else {
-        setError(response.message || 'Login failed');
-        return response;
+        setError('Login failed');
+        return { success: false, message: 'Login failed' };
       }
     } catch (err) {
       setError(err.message);
@@ -51,11 +57,21 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const response = await api.register(userData);
-      if (response.success) {
-        return response;
+      // Check if response has an error field (API returns error on failure)
+      if (response.error) {
+        setError(response.error);
+        return { success: false, message: response.error };
+      }
+      // Check if response has a token (successful registration)
+      if (response.token) {
+        setToken(response.token);
+        setUser(response.user);
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        return { success: true, message: 'Registration successful', token: response.token, user: response.user };
       } else {
-        setError(response.message || 'Registration failed');
-        return response;
+        setError('Registration failed');
+        return { success: false, message: 'Registration failed' };
       }
     } catch (err) {
       setError(err.message);

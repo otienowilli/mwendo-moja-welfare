@@ -3,32 +3,39 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
 import '../styles/Members.css';
+import '../styles/Loans.css';
 
 const Loans = () => {
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const [formData, setFormData] = useState({
     memberId: '',
-    amount: '',
-    interestRate: '',
-    duration: '',
+    principal_amount: '',
+    interest_rate: '',
+    loan_duration_months: '',
     purpose: '',
   });
-  const { logout } = useAuth();
+  const { logout, token } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchLoans();
-  }, []);
+    if (token) {
+      fetchLoans();
+    }
+  }, [token]);
 
   const fetchLoans = async () => {
     try {
-      const response = await api.get('/loans');
-      setLoans(response.data);
+      setLoading(true);
+      const response = await api.getLoans(token);
+      setLoans(response.data || []);
     } catch (err) {
       setError('Failed to fetch loans');
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -45,12 +52,18 @@ const Loans = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/loans', formData);
-      setFormData({ memberId: '', amount: '', interestRate: '', duration: '', purpose: '' });
-      setShowForm(false);
-      fetchLoans();
+      const response = await api.applyForLoan(formData, token);
+      if (response.success) {
+        setFormData({ memberId: '', principal_amount: '', interest_rate: '', loan_duration_months: '', purpose: '' });
+        setShowForm(false);
+        setError('');
+        fetchLoans();
+      } else {
+        setError(response.message || 'Failed to create loan');
+      }
     } catch (err) {
       setError('Failed to create loan');
+      console.error(err);
     }
   };
 
@@ -59,22 +72,49 @@ const Loans = () => {
     navigate('/login');
   };
 
+  const filteredLoans = loans.filter(loan => {
+    const matchesSearch =
+      (loan.member_id || loan.memberId || '').toString().includes(searchTerm) ||
+      (loan.purpose || '').toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = filterStatus === 'all' || loan.status === filterStatus;
+
+    return matchesSearch && matchesStatus;
+  });
+
   if (loading) return <div className="members-container"><p>Loading...</p></div>;
 
   return (
-    <div className="dashboard-container">
-      <div className="navbar">
-        <div className="navbar-brand">MWENDO MOJA - Loans</div>
-        <div className="navbar-user">
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
-      </div>
-      <div className="members-container">
+    <div className="members-container">
+      <div className="page-header">
         <h1>Loan Management</h1>
+        <p>Apply for loans and track repayments</p>
+      </div>
         {error && <div className="error-message">{error}</div>}
-        <button className="add-member-btn" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Cancel' : 'Apply for Loan'}
-        </button>
+
+        <div className="members-controls">
+          <input
+            type="text"
+            placeholder="Search by member ID or purpose..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="filter-select"
+          >
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="repaid">Repaid</option>
+          </select>
+          <button className="add-member-btn" onClick={() => setShowForm(!showForm)}>
+            {showForm ? '✕ Cancel' : '+ Apply for Loan'}
+          </button>
+        </div>
         {showForm && (
           <form className="member-form" onSubmit={handleSubmit}>
             <input
@@ -87,25 +127,26 @@ const Loans = () => {
             />
             <input
               type="number"
-              name="amount"
-              placeholder="Loan Amount"
-              value={formData.amount}
+              name="principal_amount"
+              placeholder="Loan Amount (KES)"
+              value={formData.principal_amount}
               onChange={handleChange}
               required
             />
             <input
               type="number"
-              name="interestRate"
+              name="interest_rate"
               placeholder="Interest Rate (%)"
-              value={formData.interestRate}
+              value={formData.interest_rate}
               onChange={handleChange}
               required
+              step="0.01"
             />
             <input
               type="number"
-              name="duration"
+              name="loan_duration_months"
               placeholder="Duration (months)"
-              value={formData.duration}
+              value={formData.loan_duration_months}
               onChange={handleChange}
               required
             />
@@ -120,30 +161,37 @@ const Loans = () => {
           </form>
         )}
         <div className="members-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Member ID</th>
-                <th>Amount</th>
-                <th>Interest Rate</th>
-                <th>Duration</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loans.map((loan) => (
-                <tr key={loan.id}>
-                  <td>{loan.memberId}</td>
-                  <td>KES {loan.amount}</td>
-                  <td>{loan.interestRate}%</td>
-                  <td>{loan.duration} months</td>
-                  <td>{loan.status || 'Pending'}</td>
+          {filteredLoans.length === 0 ? (
+            <div className="empty-state">
+              <p>{loans.length === 0 ? 'No loans found' : 'No loans match your search'}</p>
+            </div>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Member ID</th>
+                  <th>Amount (KES)</th>
+                  <th>Interest Rate</th>
+                  <th>Duration</th>
+                  <th>Status</th>
+                  <th>Purpose</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredLoans.map((loan) => (
+                  <tr key={loan.id || loan._id}>
+                    <td>{loan.member_id || loan.memberId || 'N/A'}</td>
+                    <td>{(loan.principal_amount || loan.amount || 0).toLocaleString()}</td>
+                    <td>{loan.interest_rate || loan.interestRate || 0}%</td>
+                    <td>{loan.loan_duration_months || loan.duration || 0} months</td>
+                    <td><span className={`status-${loan.status}`}>{loan.status || 'Pending'}</span></td>
+                    <td>{loan.purpose || 'N/A'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-      </div>
     </div>
   );
 };
