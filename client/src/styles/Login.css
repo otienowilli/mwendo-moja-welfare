@@ -86,6 +86,17 @@
   border-radius: 5px;
   margin-bottom: 20px;
   font-size: 14px;
+  white-space: pre-wrap;
+}
+
+.success-message {
+  background-color: #efe;
+  color: #3c3;
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  white-space: pre-wrap;
 }
 
 .register-link {

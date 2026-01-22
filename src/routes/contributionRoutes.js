@@ -4,6 +4,7 @@ const {
   confirmContribution,
   getMemberContributions,
   getContributionSummary,
+  getAllContributions,
 } = require('../controllers/contributionController');
 const { authMiddleware, roleMiddleware } = require('../middleware/auth');
 
@@ -11,6 +12,13 @@ const router = express.Router();
 
 // All contribution routes require authentication
 router.use(authMiddleware);
+
+/**
+ * @route GET /api/contributions
+ * @desc Get all contributions
+ * @access Admin, Treasurer, Secretary
+ */
+router.get('/', getAllContributions);
 
 /**
  * @route POST /api/contributions

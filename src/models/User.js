@@ -40,28 +40,22 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  password_reset_token: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+  },
+  password_reset_expires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
 }, {
   tableName: 'users',
   timestamps: true,
   underscored: true,
 });
 
-// Hash password before saving (if password field is provided)
-User.beforeCreate(async (user) => {
-  if (user.password) {
-    const salt = await bcrypt.genSalt(10);
-    user.password_hash = await bcrypt.hash(user.password, salt);
-  }
-});
-
-// Also hash password on update if it changes
-User.beforeUpdate(async (user) => {
-  const passwordToHash = user.password || user.password_hash;
-  if (passwordToHash && (user.changed('password') || user.changed('password_hash'))) {
-    const salt = await bcrypt.genSalt(10);
-    user.password_hash = await bcrypt.hash(passwordToHash, salt);
-  }
-});
+// Note: Password hashing is now handled in the controller
+// to avoid double-hashing issues
 
 // Method to compare passwords
 User.prototype.comparePassword = async function(password) {

@@ -1,8 +1,11 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
-const PORT = 3000;
+const PORT = process.env.FRONTEND_PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 const DIST_DIR = path.join(__dirname, 'client', 'dist');
 
 const server = http.createServer((req, res) => {
@@ -67,11 +70,47 @@ const server = http.createServer((req, res) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`\n✓ Frontend server running on http://localhost:${PORT}`);
-    console.log(`✓ Backend API running on http://localhost:8000/api`);
-    console.log(`✓ React app built and ready\n`);
-});
+// Start server with HTTPS support
+if (NODE_ENV === 'production') {
+    const certPath = process.env.SSL_CERT_PATH || '/etc/letsencrypt/live/yourdomain.com/fullchain.pem';
+    const keyPath = process.env.SSL_KEY_PATH || '/etc/letsencrypt/live/yourdomain.com/privkey.pem';
+
+    try {
+        if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+            const options = {
+                cert: fs.readFileSync(certPath),
+                key: fs.readFileSync(keyPath)
+            };
+
+            https.createServer(options, server).listen(PORT, () => {
+                console.log(`\n🔒 Frontend server running on https://localhost:${PORT} (Production)`);
+                console.log(`🔒 Backend API running on https://localhost:8000/api`);
+                console.log(`✓ React app built and ready\n`);
+            });
+        } else {
+            console.warn('⚠️  SSL certificates not found. Running on HTTP.');
+            server.listen(PORT, () => {
+                console.log(`\n✓ Frontend server running on http://localhost:${PORT}`);
+                console.log(`✓ Backend API running on http://localhost:8000/api`);
+                console.log(`✓ React app built and ready\n`);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading SSL certificates:', error);
+        console.warn('Falling back to HTTP');
+        server.listen(PORT, () => {
+            console.log(`\n✓ Frontend server running on http://localhost:${PORT}`);
+            console.log(`✓ Backend API running on http://localhost:8000/api`);
+            console.log(`✓ React app built and ready\n`);
+        });
+    }
+} else {
+    server.listen(PORT, () => {
+        console.log(`\n✓ Frontend server running on http://localhost:${PORT} (Development)`);
+        console.log(`✓ Backend API running on http://localhost:8000/api`);
+        console.log(`✓ React app built and ready\n`);
+    });
+}
 
 const html = `<!DOCTYPE html>
 <html lang="en">

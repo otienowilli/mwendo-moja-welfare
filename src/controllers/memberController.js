@@ -6,7 +6,10 @@ const createMember = async (req, res) => {
     const {
       membership_card_number,
       national_id,
-      full_name,
+      first_name,
+      middle_name,
+      last_name,
+      email,
       sex,
       date_of_birth,
       phone_number,
@@ -15,8 +18,8 @@ const createMember = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!membership_card_number || !national_id || !full_name) {
-      return res.status(400).json({ error: 'Required fields missing' });
+    if (!membership_card_number || !national_id || !first_name || !last_name) {
+      return res.status(400).json({ error: 'Membership card number, national ID, first name, and last name are required' });
     }
 
     // Check for duplicates
@@ -28,9 +31,28 @@ const createMember = async (req, res) => {
       return res.status(400).json({ error: 'Membership card number already exists' });
     }
 
+    // Check if email already exists (if provided)
+    if (email) {
+      const existingEmail = await Member.findOne({
+        where: { email },
+      });
+      if (existingEmail) {
+        return res.status(400).json({ error: 'Email already exists' });
+      }
+    }
+
+    // Build full_name from first, middle, and last names
+    const full_name = middle_name
+      ? `${first_name} ${middle_name} ${last_name}`
+      : `${first_name} ${last_name}`;
+
     const member = await Member.create({
       membership_card_number,
       national_id,
+      first_name,
+      middle_name: middle_name || null,
+      last_name,
+      email: email || null,
       full_name,
       sex,
       date_of_birth,
@@ -62,8 +84,8 @@ const getAllMembers = async (req, res) => {
     });
 
     res.json({
+      data: members,
       count: members.length,
-      members,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

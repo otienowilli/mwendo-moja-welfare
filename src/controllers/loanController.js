@@ -158,11 +158,30 @@ const getMemberLoans = async (req, res) => {
   }
 };
 
+const getAllLoans = async (req, res) => {
+  try {
+    const loans = await Loan.findAll({
+      include: [
+        { model: Member, attributes: ['id', 'full_name', 'membership_card_number'] },
+      ],
+      order: [['created_at', 'DESC']],
+    });
+
+    res.json({
+      data: loans,
+      count: loans.length,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   applyForLoan,
   approveLoan,
   disburseLoan,
   getLoanById,
   getMemberLoans,
+  getAllLoans,
 };
 

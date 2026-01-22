@@ -17,9 +17,26 @@ const Member = sequelize.define('Member', {
     unique: true,
     allowNull: false,
   },
-  full_name: {
-    type: DataTypes.STRING(100),
+  first_name: {
+    type: DataTypes.STRING(50),
     allowNull: false,
+  },
+  middle_name: {
+    type: DataTypes.STRING(50),
+    allowNull: true,
+  },
+  last_name: {
+    type: DataTypes.STRING(50),
+    allowNull: false,
+  },
+  full_name: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+    unique: true,
   },
   sex: {
     type: DataTypes.ENUM('Male', 'Female'),

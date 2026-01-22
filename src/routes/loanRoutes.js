@@ -5,6 +5,7 @@ const {
   disburseLoan,
   getLoanById,
   getMemberLoans,
+  getAllLoans,
 } = require('../controllers/loanController');
 const {
   recordRepayment,
@@ -18,6 +19,13 @@ const router = express.Router();
 
 // All loan routes require authentication
 router.use(authMiddleware);
+
+/**
+ * @route GET /api/loans
+ * @desc Get all loans
+ * @access Admin, Treasurer, Secretary
+ */
+router.get('/', getAllLoans);
 
 /**
  * @route POST /api/loans

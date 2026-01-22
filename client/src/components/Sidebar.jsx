@@ -16,7 +16,7 @@ const Sidebar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const menuItems = [
+  const commonMenuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
     { path: '/members', label: 'Members', icon: '👥' },
     { path: '/contributions', label: 'Contributions', icon: '💰' },
@@ -25,6 +25,15 @@ const Sidebar = () => {
     { path: '/profile', label: 'My Profile', icon: '👤' },
     { path: '/my-loans', label: 'My Loans', icon: '🏦' },
   ];
+
+  const adminMenuItems = [
+    { path: '/admin/dashboard', label: 'Admin Dashboard', icon: '🔐' },
+    { path: '/admin/users', label: 'Manage Users', icon: '👥' },
+    { path: '/admin/vote-heads', label: 'Vote Heads', icon: '🏷️' },
+    { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
+  ];
+
+  const menuItems = user?.role === 'admin' ? [...adminMenuItems, ...commonMenuItems] : commonMenuItems;
 
   return (
     <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>

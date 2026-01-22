@@ -5,9 +5,10 @@ let sequelize;
 
 // Use SQLite for development/testing if PostgreSQL is not available
 if (process.env.USE_SQLITE === 'true' || process.env.NODE_ENV === 'test') {
+  const dbPath = process.env.DB_PATH || require('path').join(__dirname, '../../mwendo_moja.db');
   sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './mwendo_moja.db', // Use file-based database for persistence
+    storage: dbPath, // Use absolute path for database persistence
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
   });
 } else {

@@ -157,10 +157,30 @@ const getContributionSummary = async (req, res) => {
   }
 };
 
+const getAllContributions = async (req, res) => {
+  try {
+    const contributions = await MemberContribution.findAll({
+      include: [
+        { model: Member, attributes: ['id', 'full_name', 'membership_card_number'] },
+        { model: VoteHead, attributes: ['id', 'name'] },
+      ],
+      order: [['created_at', 'DESC']],
+    });
+
+    res.json({
+      data: contributions,
+      count: contributions.length,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   recordContribution,
   confirmContribution,
   getMemberContributions,
   getContributionSummary,
+  getAllContributions,
 };
 

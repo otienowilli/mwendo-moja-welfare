@@ -1,0 +1,150 @@
+.vote-heads-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.vote-heads-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vote-heads-header h1 {
+  margin: 0;
+  color: #333;
+  font-size: 2em;
+}
+
+.vote-head-form {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.vote-head-form input,
+.vote-head-form textarea,
+.vote-head-form select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+  font-family: inherit;
+}
+
+.vote-head-form textarea {
+  grid-column: 1 / -1;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.vote-head-form input:focus,
+.vote-head-form textarea:focus,
+.vote-head-form select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  grid-column: 1 / -1;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+}
+
+.vote-heads-table {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vote-heads-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.vote-heads-table th {
+  background: #f5f5f5;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.vote-heads-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.vote-heads-table tr:hover {
+  background: #f9f9f9;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: #51cf66;
+  color: white;
+}
+
+.status-badge.inactive {
+  background: #ff8787;
+  color: white;
+}
+
+.action-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.action-btn.delete {
+  background: #ff8787;
+  color: white;
+}
+
+.action-btn.delete:hover {
+  background: #ff6b6b;
+}
+
+@media (max-width: 768px) {
+  .vote-heads-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .vote-heads-table {
+    overflow-x: auto;
+  }
+}
+
