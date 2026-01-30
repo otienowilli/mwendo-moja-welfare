@@ -1,0 +1,40 @@
+{
+  "name": "mwendo-moja-welfare",
+  "version": "1.0.0",
+  "description": "MWENDO MOJA WELFARE - Group Savings and Loans Management System",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:verbose": "jest --verbose",
+    "db:migrate": "sequelize db:migrate",
+    "db:seed": "sequelize db:seed:all"
+  },
+  "keywords": [
+    "welfare",
+    "savings",
+    "loans",
+    "group"
+  ],
+  "author": "MWENDO MOJA",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7",
+    "twilio": "^5.10.7"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "node-mocks-http": "^1.17.2",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
+  }
+}

@@ -149,29 +149,12 @@ const forgotPassword = async (req, res) => {
       password_reset_expires: expiresIn,
     });
 
-    // Build reset link
+    // In production, send email with reset link
+    // For now, return the token (in production, never do this)
     const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:8000'}/reset-password/${resetToken}`;
 
-    // Send password reset email
-    const emailService = require('../services/emailService');
-    const emailResult = await emailService.sendTemplatedEmail(
-      user.email,
-      'passwordReset',
-      {
-        fullName: user.full_name || user.username,
-        resetLink: resetLink,
-      }
-    );
-
-    // Log email sending result
-    if (emailResult.success) {
-      console.log(`Password reset email sent to ${user.email}`);
-    } else {
-      console.warn(`Failed to send password reset email to ${user.email}:`, emailResult.error);
-    }
-
     res.status(200).json({
-      message: 'If an account exists with this email, a password reset link has been sent',
+      message: 'Password reset link has been sent to your email',
       // Remove this in production - only for testing
       resetLink: process.env.NODE_ENV === 'development' ? resetLink : undefined,
     });

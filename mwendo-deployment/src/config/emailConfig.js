@@ -119,23 +119,6 @@ Please take necessary action or contact our office for more information.
 Best regards,
 MWENDO MOJA Welfare Management System`,
     },
-
-    passwordReset: {
-      subject: 'Password Reset Request - MWENDO MOJA',
-      body: `Dear {fullName},
-
-We received a request to reset your password for your MWENDO MOJA Welfare account.
-
-Click the link below to reset your password:
-{resetLink}
-
-This link will expire in 1 hour.
-
-If you did not request a password reset, please ignore this email or contact our support team.
-
-Best regards,
-MWENDO MOJA Welfare Management System`,
-    },
   },
 
   // Validation Rules

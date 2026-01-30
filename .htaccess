@@ -1,0 +1,17 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Proxy all requests to Node.js backend on port 8000
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ http://localhost:8000/$1 [P,L]
+</IfModule>
+
+<IfModule mod_proxy.c>
+  ProxyRequests Off
+  ProxyPreserveHost On
+  ProxyPassMatch ^/(.*)$ http://localhost:8000/$1
+  ProxyPassReverseMatch ^/(.*)$ http://localhost:8000/$1
+</IfModule>
+
