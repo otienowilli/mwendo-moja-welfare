@@ -21,6 +21,8 @@ const welfareRoutes = require('./routes/welfareRoutes');
 const hostingRoutes = require('./routes/hostingRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const dividendRoutes = require('./routes/dividendRoutes');
+const paymentCampaignRoutes = require('./routes/paymentCampaignRoutes');
+const mpesaPaymentRoutes = require('./routes/mpesaPaymentRoutes');
 
 const app = express();
 
@@ -55,6 +57,8 @@ app.use('/api/welfare', welfareRoutes);
 app.use('/api/hosting', hostingRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/dividends', dividendRoutes);
+app.use('/api/payment-campaigns', paymentCampaignRoutes);
+app.use('/api/mpesa-payments', mpesaPaymentRoutes);
 
 // SPA fallback - serve index.html for all non-API routes
 app.use((req, res) => {
