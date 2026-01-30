@@ -103,6 +103,88 @@ const api = {
     });
     return response.json();
   },
+
+  // Vote Head endpoints
+  getVoteHeads: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/vote-heads`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  // Payment Campaign endpoints
+  getPaymentCampaigns: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/payment-campaigns`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  getPaymentCampaignDetails: async (campaignId, token) => {
+    const response = await fetch(`${API_BASE_URL}/payment-campaigns/${campaignId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  createPaymentCampaign: async (campaignData, token) => {
+    const response = await fetch(`${API_BASE_URL}/payment-campaigns`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(campaignData),
+    });
+    return response.json();
+  },
+
+  sendPaymentPrompts: async (campaignId, token) => {
+    const response = await fetch(`${API_BASE_URL}/payment-campaigns/${campaignId}/send-prompts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  // M-Pesa Payment endpoints
+  getPendingPayments: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/mpesa-payments/pending`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  confirmPayment: async (requestId, paymentData, token) => {
+    const response = await fetch(`${API_BASE_URL}/mpesa-payments/${requestId}/confirm`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(paymentData),
+    });
+    return response.json();
+  },
 };
 
 export default api;

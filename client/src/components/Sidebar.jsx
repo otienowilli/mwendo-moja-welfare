@@ -22,6 +22,7 @@ const Sidebar = () => {
     { path: '/contributions', label: 'Contributions', icon: '💰' },
     { path: '/loans', label: 'Loans', icon: '📋' },
     { path: '/reports', label: 'Reports', icon: '📈' },
+    { path: '/payments/pending', label: 'M-Pesa Payments', icon: '💳' },
     { path: '/profile', label: 'My Profile', icon: '👤' },
     { path: '/my-loans', label: 'My Loans', icon: '🏦' },
   ];
@@ -30,6 +31,7 @@ const Sidebar = () => {
     { path: '/admin/dashboard', label: 'Admin Dashboard', icon: '🔐' },
     { path: '/admin/users', label: 'Manage Users', icon: '👥' },
     { path: '/admin/vote-heads', label: 'Vote Heads', icon: '🏷️' },
+    { path: '/admin/campaigns', label: 'Payment Campaigns', icon: '💳' },
     { path: '/admin/settings', label: 'Settings', icon: '⚙️' },
   ];
 

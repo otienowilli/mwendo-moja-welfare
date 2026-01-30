@@ -16,6 +16,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import UserManagement from './pages/UserManagement';
 import VoteHeadsManagement from './pages/VoteHeadsManagement';
 import SystemSettings from './pages/SystemSettings';
+import PaymentCampaigns from './pages/PaymentCampaigns';
+import PendingPayments from './pages/PendingPayments';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import './App.css';
@@ -145,6 +147,26 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <SystemSettings />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/campaigns"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PaymentCampaigns />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payments/pending"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <PendingPayments />
                 </Layout>
               </ProtectedRoute>
             }
