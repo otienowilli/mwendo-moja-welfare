@@ -1,6 +1,9 @@
 // API Service - Handles all backend communication
-// Use relative path so it works on any domain (localhost, production, etc.)
-const API_BASE_URL = '/api';
+// Determine API URL based on environment
+const API_BASE_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:8000/api'  // Local development
+    : '/api';  // Production (relative path)
 
 const api = {
   // Auth endpoints
