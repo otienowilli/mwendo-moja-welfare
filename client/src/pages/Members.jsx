@@ -291,9 +291,11 @@ const Members = () => {
             <thead>
               <tr>
                 <th>Full Name</th>
+                <th>Membership Card</th>
                 <th>National ID</th>
                 <th>Email</th>
                 <th>Designation</th>
+                <th>Role</th>
                 <th>Phone</th>
                 <th>Gender</th>
                 <th>Status</th>
@@ -308,9 +310,11 @@ const Members = () => {
                 return (
                   <tr key={member.id}>
                     <td>{fullName}</td>
+                    <td>{member.membership_card_number || '-'}</td>
                     <td>{member.national_id}</td>
                     <td>{member.email || '-'}</td>
                     <td>{member.designation || '-'}</td>
+                    <td>{member.role_in_group || '-'}</td>
                     <td>{member.phone_number || '-'}</td>
                     <td>{member.sex || '-'}</td>
                     <td><span className={`status-${member.status || 'active'}`}>{member.status || 'Active'}</span></td>
