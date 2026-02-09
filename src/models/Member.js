@@ -38,6 +38,10 @@ const Member = sequelize.define('Member', {
     allowNull: true,
     unique: true,
   },
+  designation: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+  },
   sex: {
     type: DataTypes.ENUM('Male', 'Female'),
   },

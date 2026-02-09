@@ -17,6 +17,7 @@ const Members = () => {
     middle_name: '',
     last_name: '',
     email: '',
+    designation: '',
     phone_number: '',
     sex: '',
     date_of_birth: '',
@@ -59,6 +60,7 @@ const Members = () => {
             middle_name: '',
             last_name: '',
             email: '',
+            designation: '',
             phone_number: '',
             sex: '',
             date_of_birth: '',
@@ -81,6 +83,7 @@ const Members = () => {
             middle_name: '',
             last_name: '',
             email: '',
+            designation: '',
             phone_number: '',
             sex: '',
             date_of_birth: '',
@@ -167,6 +170,7 @@ const Members = () => {
             middle_name: '',
             last_name: '',
             email: '',
+            designation: '',
             phone_number: '',
             sex: '',
             date_of_birth: '',
@@ -228,6 +232,13 @@ const Members = () => {
             onChange={handleInputChange}
           />
           <input
+            type="text"
+            name="designation"
+            placeholder="Designation (e.g., Chairman, Treasurer, Secretary)"
+            value={formData.designation}
+            onChange={handleInputChange}
+          />
+          <input
             type="tel"
             name="phone_number"
             placeholder="Phone Number"
@@ -282,6 +293,7 @@ const Members = () => {
                 <th>Full Name</th>
                 <th>National ID</th>
                 <th>Email</th>
+                <th>Designation</th>
                 <th>Phone</th>
                 <th>Gender</th>
                 <th>Status</th>
@@ -298,6 +310,7 @@ const Members = () => {
                     <td>{fullName}</td>
                     <td>{member.national_id}</td>
                     <td>{member.email || '-'}</td>
+                    <td>{member.designation || '-'}</td>
                     <td>{member.phone_number || '-'}</td>
                     <td>{member.sex || '-'}</td>
                     <td><span className={`status-${member.status || 'active'}`}>{member.status || 'Active'}</span></td>

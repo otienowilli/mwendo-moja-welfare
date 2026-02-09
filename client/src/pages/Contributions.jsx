@@ -82,10 +82,15 @@ const Contributions = () => {
     navigate('/login');
   };
 
+  const getVoteHeadName = (voteHeadId) => {
+    const voteHead = voteHeads.find(vh => vh.id === voteHeadId || vh._id === voteHeadId);
+    return voteHead ? voteHead.name : 'N/A';
+  };
+
   const filteredContributions = contributions.filter(contribution => {
     const matchesSearch =
       (contribution.member_id || '').toString().includes(searchTerm) ||
-      (contribution.vote_head_id || '').toString().includes(searchTerm);
+      getVoteHeadName(contribution.vote_head_id).toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesVoteHead = filterVoteHead === 'all' || contribution.vote_head_id === filterVoteHead;
 
@@ -186,7 +191,7 @@ const Contributions = () => {
                 {filteredContributions.map((contrib) => (
                   <tr key={contrib.id || contrib._id}>
                     <td>{contrib.member_id || contrib.memberId || 'N/A'}</td>
-                    <td>{contrib.vote_head_id || contrib.voteHeadId || 'N/A'}</td>
+                    <td>{getVoteHeadName(contrib.vote_head_id || contrib.voteHeadId)}</td>
                     <td>{(contrib.amount || 0).toLocaleString()}</td>
                     <td>{new Date(contrib.contribution_date || contrib.date).toLocaleDateString()}</td>
                     <td><span className={`status-${contrib.status}`}>{contrib.status || 'Pending'}</span></td>
