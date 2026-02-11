@@ -15,6 +15,7 @@ const Contributions = () => {
   const [houseHosts, setHouseHosts] = useState('');
   const [reportDate, setReportDate] = useState(new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }));
   const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({});
   const { logout, token } = useAuth();
   const navigate = useNavigate();
@@ -104,6 +105,7 @@ const Contributions = () => {
       if (response.success) {
         setFormData({});
         setEditingId(null);
+        setShowForm(false);
         setError('');
         fetchContributionsByHouse();
       } else {
@@ -117,6 +119,7 @@ const Contributions = () => {
 
   const handleEdit = (contribution) => {
     setEditingId(contribution.id);
+    setShowForm(true);
     const editData = { member_id: contribution.member_id };
     voteHeadColumns.forEach(col => {
       editData[col] = contribution[col] || 0;
@@ -199,10 +202,11 @@ const Contributions = () => {
       {/* Controls */}
       <div className="contributions-controls">
         <button className="add-member-btn" onClick={() => {
+          setShowForm(!showForm);
           setEditingId(null);
           setFormData({});
         }}>
-          {editingId ? '✕ Cancel Edit' : '+ Add Contribution'}
+          {showForm ? '✕ Cancel' : '+ Add Contribution'}
         </button>
         <button className="print-btn" onClick={() => window.print()}>
           🖨️ Print Report
@@ -210,7 +214,7 @@ const Contributions = () => {
       </div>
 
       {/* Add/Edit Contribution Form */}
-      {(editingId || Object.keys(formData).length > 0) && (
+      {showForm && (
         <form className="member-form" onSubmit={handleSubmit}>
           <div className="form-row">
             <select
