@@ -99,5 +99,8 @@ const HouseContributions = sequelize.define('HouseContributions', {
   underscored: true,
 });
 
+// Association
+HouseContributions.belongsTo(Member, { foreignKey: 'member_id' });
+
 module.exports = HouseContributions;
 

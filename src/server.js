@@ -10,6 +10,7 @@ const sequelize = require('./config/database');
 const User = require('./models/User');
 const Member = require('./models/Member');
 const VoteHead = require('./models/VoteHead');
+const HouseContributions = require('./models/HouseContributions');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');

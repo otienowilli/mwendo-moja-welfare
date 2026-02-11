@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/auth');
 const {
   getHouseContributions,
   getContributionsByHouse,
@@ -9,16 +9,16 @@ const {
 } = require('../controllers/houseContributionsController');
 
 // Get all house contributions
-router.get('/', authenticateToken, getHouseContributions);
+router.get('/', authMiddleware, getHouseContributions);
 
 // Get contributions by house number
-router.get('/house/:houseNumber', authenticateToken, getContributionsByHouse);
+router.get('/house/:houseNumber', authMiddleware, getContributionsByHouse);
 
 // Save (create or update) house contribution
-router.post('/', authenticateToken, saveHouseContribution);
+router.post('/', authMiddleware, saveHouseContribution);
 
 // Delete house contribution
-router.delete('/:id', authenticateToken, deleteHouseContribution);
+router.delete('/:id', authMiddleware, deleteHouseContribution);
 
 module.exports = router;
 
