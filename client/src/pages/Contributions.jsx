@@ -4,15 +4,18 @@ import { useAuth } from '../hooks/useAuth';
 import api from '../services/api';
 import '../styles/Members.css';
 import '../styles/Loans.css';
+import '../styles/Contributions.css';
 
 const Contributions = () => {
   const [contributions, setContributions] = useState([]);
+  const [members, setMembers] = useState([]);
   const [voteHeads, setVoteHeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterVoteHead, setFilterVoteHead] = useState('all');
+  const [selectedHouse, setSelectedHouse] = useState('01');
+  const [houseHosts, setHouseHosts] = useState('');
+  const [reportDate, setReportDate] = useState(new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }));
   const [formData, setFormData] = useState({
     member_id: '',
     vote_head_id: '',
@@ -25,6 +28,7 @@ const Contributions = () => {
   useEffect(() => {
     if (token) {
       fetchContributions();
+      fetchMembers();
       fetchVoteHeads();
     }
   }, [token]);
@@ -39,6 +43,15 @@ const Contributions = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchMembers = async () => {
+    try {
+      const response = await api.getMembers(token);
+      setMembers(response.data || []);
+    } catch (err) {
+      console.error('Failed to fetch members');
     }
   };
 
@@ -87,120 +100,204 @@ const Contributions = () => {
     return voteHead ? voteHead.name : 'N/A';
   };
 
-  const filteredContributions = contributions.filter(contribution => {
-    const matchesSearch =
-      (contribution.member_id || '').toString().includes(searchTerm) ||
-      getVoteHeadName(contribution.vote_head_id).toLowerCase().includes(searchTerm.toLowerCase());
+  const getMemberName = (memberId) => {
+    const member = members.find(m => m.id === memberId || m._id === memberId);
+    return member ? member.full_name : 'N/A';
+  };
 
-    const matchesVoteHead = filterVoteHead === 'all' || contribution.vote_head_id === filterVoteHead;
+  // Build contribution matrix: rows = members, columns = vote heads
+  const buildContributionMatrix = () => {
+    const matrix = {};
 
-    return matchesSearch && matchesVoteHead;
-  });
+    members.forEach(member => {
+      matrix[member.id] = {
+        member,
+        contributions: {}
+      };
+      voteHeads.forEach(vh => {
+        matrix[member.id].contributions[vh.id] = 0;
+      });
+    });
+
+    contributions.forEach(contrib => {
+      if (matrix[contrib.member_id]) {
+        matrix[contrib.member_id].contributions[contrib.vote_head_id] =
+          (matrix[contrib.member_id].contributions[contrib.vote_head_id] || 0) + parseFloat(contrib.amount || 0);
+      }
+    });
+
+    return matrix;
+  };
+
+  const contributionMatrix = buildContributionMatrix();
+  const matrixRows = Object.values(contributionMatrix);
 
   if (loading) return <div className="members-container"><p>Loading...</p></div>;
 
   return (
-    <div className="members-container">
-      <div className="page-header">
-        <h1>Contribution Tracking</h1>
-        <p>Record and track member contributions</p>
-      </div>
-        {error && <div className="error-message">{error}</div>}
+    <div className="contributions-container">
+      {/* Report Header */}
+      <div className="report-header">
+        <h1 className="report-title">MWENDO MOJA WELFARE CONTRIBUTIONS</h1>
+        <p className="report-subtitle">MEMBERS CONTRIBUTIONS FOR VARIOUS VOTE HEADS PER HOUSE - 2026 / 2027</p>
 
-        <div className="members-controls">
+        {/* House Information Section */}
+        <div className="house-info-section">
+          <div className="house-info-row">
+            <div className="house-number">
+              <label>HOUSE NO.</label>
+              <input
+                type="text"
+                value={selectedHouse}
+                onChange={(e) => setSelectedHouse(e.target.value)}
+                className="house-input"
+              />
+            </div>
+            <div className="house-hosts">
+              <label>HOST(S)</label>
+              <textarea
+                value={houseHosts}
+                onChange={(e) => setHouseHosts(e.target.value)}
+                placeholder="1. Name&#10;2. Name"
+                className="hosts-input"
+              />
+            </div>
+            <div className="report-date">
+              <label>DATE</label>
+              <input
+                type="text"
+                value={reportDate}
+                onChange={(e) => setReportDate(e.target.value)}
+                className="date-input"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {error && <div className="error-message">{error}</div>}
+
+      {/* Controls */}
+      <div className="contributions-controls">
+        <button className="add-member-btn" onClick={() => setShowForm(!showForm)}>
+          {showForm ? '✕ Cancel' : '+ Add Contribution'}
+        </button>
+        <button className="print-btn" onClick={() => window.print()}>
+          🖨️ Print Report
+        </button>
+      </div>
+
+      {/* Add Contribution Form */}
+      {showForm && (
+        <form className="member-form" onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Search by member ID or vote head..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            name="member_id"
+            placeholder="Member ID"
+            value={formData.member_id}
+            onChange={handleChange}
+            required
           />
           <select
-            value={filterVoteHead}
-            onChange={(e) => setFilterVoteHead(e.target.value)}
-            className="filter-select"
+            name="vote_head_id"
+            value={formData.vote_head_id}
+            onChange={handleChange}
+            required
           >
-            <option value="all">All Vote Heads</option>
-            {voteHeads.map(vh => (
-              <option key={vh._id || vh.id} value={vh._id || vh.id}>
-                {vh.name || vh.title}
-              </option>
+            <option value="">Select Vote Head</option>
+            {voteHeads.map((vh) => (
+              <option key={vh.id} value={vh.id}>{vh.name}</option>
             ))}
           </select>
-          <button className="add-member-btn" onClick={() => setShowForm(!showForm)}>
-            {showForm ? '✕ Cancel' : '+ Add Contribution'}
-          </button>
-        </div>
-        {showForm && (
-          <form className="member-form" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="member_id"
-              placeholder="Member ID"
-              value={formData.member_id}
-              onChange={handleChange}
-              required
-            />
-            <select
-              name="vote_head_id"
-              value={formData.vote_head_id}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Vote Head</option>
-              {voteHeads.map((vh) => (
-                <option key={vh.id} value={vh.id}>{vh.name}</option>
-              ))}
-            </select>
-            <input
-              type="number"
-              name="amount"
-              placeholder="Amount (KES)"
-              value={formData.amount}
-              onChange={handleChange}
-              required
-              step="0.01"
-            />
-            <input
-              type="date"
-              name="contribution_date"
-              value={formData.contribution_date}
-              onChange={handleChange}
-              required
-            />
-            <button type="submit" className="submit-btn">Add Contribution</button>
-          </form>
-        )}
-        <div className="members-table">
-          {filteredContributions.length === 0 ? (
-            <div className="empty-state">
-              <p>{contributions.length === 0 ? 'No contributions found' : 'No contributions match your search'}</p>
-            </div>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th>Member ID</th>
-                  <th>Vote Head</th>
-                  <th>Amount (KES)</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredContributions.map((contrib) => (
-                  <tr key={contrib.id || contrib._id}>
-                    <td>{contrib.member_id || contrib.memberId || 'N/A'}</td>
-                    <td>{getVoteHeadName(contrib.vote_head_id || contrib.voteHeadId)}</td>
-                    <td>{(contrib.amount || 0).toLocaleString()}</td>
-                    <td>{new Date(contrib.contribution_date || contrib.date).toLocaleDateString()}</td>
-                    <td><span className={`status-${contrib.status}`}>{contrib.status || 'Pending'}</span></td>
-                  </tr>
+          <input
+            type="number"
+            name="amount"
+            placeholder="Amount (KES)"
+            value={formData.amount}
+            onChange={handleChange}
+            required
+            step="0.01"
+          />
+          <input
+            type="date"
+            name="contribution_date"
+            value={formData.contribution_date}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="submit-btn">Add Contribution</button>
+        </form>
+      )}
+
+      {/* Contributions Table */}
+      <div className="contributions-table-wrapper">
+        {matrixRows.length === 0 ? (
+          <div className="empty-state">
+            <p>No members found</p>
+          </div>
+        ) : (
+          <table className="contributions-matrix-table">
+            {/* First Header Row: S/NO, NAME, MEMBERSHIP FEES, WELFARE CONTRIBUTIONS, HOSTS' DUES */}
+            <thead>
+              <tr className="header-row-1">
+                <th className="col-sno">S/NO</th>
+                <th className="col-name">NAME</th>
+                <th className="col-membership">MEMBERSHIP FEES</th>
+                <th className="col-welfare">WELFARE CONTRIBUTIONS</th>
+                <th className="col-hosts">HOSTS' DUES</th>
+              </tr>
+
+              {/* Second Header Row: Vote Heads */}
+              <tr className="header-row-2">
+                <th colSpan="2"></th>
+                {voteHeads.map((vh) => (
+                  <th key={vh.id} className="vote-head-col" title={vh.name}>
+                    {vh.name.substring(0, 4).toUpperCase()}
+                  </th>
                 ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                <th className="col-total">TOTAL</th>
+              </tr>
+            </thead>
+
+            {/* Data Rows */}
+            <tbody>
+              {matrixRows.map((row, index) => {
+                const rowTotal = Object.values(row.contributions).reduce((sum, val) => sum + val, 0);
+                return (
+                  <tr key={row.member.id} className="data-row">
+                    <td className="col-sno">{index + 1}</td>
+                    <td className="col-name">{row.member.full_name}</td>
+                    {voteHeads.map((vh) => (
+                      <td key={vh.id} className="vote-head-col amount">
+                        {row.contributions[vh.id] > 0 ? row.contributions[vh.id].toLocaleString() : '-'}
+                      </td>
+                    ))}
+                    <td className="col-total amount">{rowTotal.toLocaleString()}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+
+            {/* Totals Row */}
+            <tfoot>
+              <tr className="totals-row">
+                <td colSpan="2" className="totals-label">TOTALS</td>
+                {voteHeads.map((vh) => {
+                  const vhTotal = matrixRows.reduce((sum, row) => sum + (row.contributions[vh.id] || 0), 0);
+                  return (
+                    <td key={vh.id} className="vote-head-col amount total">
+                      {vhTotal.toLocaleString()}
+                    </td>
+                  );
+                })}
+                <td className="col-total amount total">
+                  {matrixRows.reduce((sum, row) => sum + Object.values(row.contributions).reduce((s, v) => s + v, 0), 0).toLocaleString()}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        )}
+      </div>
     </div>
   );
 };
