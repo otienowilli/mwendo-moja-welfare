@@ -81,6 +81,7 @@
   justify-content: flex-end;
 }
 
+.add-member-btn,
 .print-btn {
   padding: 10px 20px;
   background-color: #4CAF50;
@@ -92,7 +93,76 @@
   font-weight: 500;
 }
 
+.print-btn {
+  background-color: #2196F3;
+}
+
+.add-member-btn:hover {
+  background-color: #45a049;
+}
+
 .print-btn:hover {
+  background-color: #0b7dda;
+}
+
+/* Form Styling */
+.member-form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+.form-row {
+  margin-bottom: 15px;
+}
+
+.form-row select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.submit-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.submit-btn:hover {
   background-color: #45a049;
 }
 
@@ -182,22 +252,57 @@
   background-color: #34495e;
 }
 
+/* Table Actions */
+.col-actions {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  width: 100px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #0b7dda;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #da190b;
+}
+
 /* Print Styles */
 @media print {
-  .contributions-controls, .member-form {
+  .contributions-controls, .member-form, .col-actions {
     display: none;
   }
-  
+
   .contributions-container {
     background-color: white;
     padding: 0;
   }
-  
+
   .report-header {
     box-shadow: none;
     border: none;
   }
-  
+
   .contributions-table-wrapper {
     box-shadow: none;
     padding: 0;

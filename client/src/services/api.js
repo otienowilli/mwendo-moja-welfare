@@ -95,6 +95,64 @@ const api = {
     return response.json();
   },
 
+  recordContribution: async (data, token) => {
+    const response = await fetch(`${API_BASE_URL}/contributions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
+  // House Contributions endpoints
+  getHouseContributions: async (token) => {
+    const response = await fetch(`${API_BASE_URL}/house-contributions`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  getContributionsByHouse: async (houseNumber, token) => {
+    const response = await fetch(`${API_BASE_URL}/house-contributions/house/${houseNumber}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  saveHouseContribution: async (data, token) => {
+    const response = await fetch(`${API_BASE_URL}/house-contributions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
+  deleteHouseContribution: async (id, token) => {
+    const response = await fetch(`${API_BASE_URL}/house-contributions/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
   // Loan endpoints
   getLoans: async (token) => {
     const response = await fetch(`${API_BASE_URL}/loans`, {
