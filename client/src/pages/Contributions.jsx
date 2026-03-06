@@ -23,20 +23,20 @@ const Contributions = () => {
   // Vote head columns in order
   const voteHeadColumns = ['reg', 'entry', 'card', 'shar', 'savi', 'admn', 's_fund', 'fine', 'unif', 'merr', 'anniv', 'sindi', 'meal', 'jikon'];
   const voteHeadLabels = {
-    reg: 'REG',
-    entry: 'ENTRY',
-    card: 'CARD',
-    shar: 'SHAR',
-    savi: 'SAVI',
-    admn: 'ADMN',
-    s_fund: 'S/FUND',
-    fine: 'FINE',
-    unif: 'UNIF',
-    merr: 'MERR',
-    anniv: 'ANNIV',
-    sindi: 'SINDI',
-    meal: 'MEAL',
-    jikon: 'JIKON',
+    reg: 'REGISTRATION FEES',
+    entry: 'ENTRY FEE',
+    card: 'MEMBERSHIP CARD',
+    shar: 'SHARES',
+    savi: 'SAVINGS',
+    admn: 'ADMIN COST',
+    s_fund: 'SEED FUND',
+    fine: 'FINES/PENALTIES',
+    unif: 'UNIFORM',
+    merr: 'MERRY-GO',
+    anniv: 'ANNIVERSARY',
+    sindi: 'SINDIKIZA',
+    meal: 'MEALS',
+    jikon: 'PAMBA JIKONI',
   };
 
   useEffect(() => {
@@ -152,6 +152,24 @@ const Contributions = () => {
   const getMemberName = (memberId) => {
     const member = members.find(m => m.id === memberId);
     return member ? member.full_name : 'N/A';
+  };
+
+  // Short labels for table headers
+  const voteHeadShortLabels = {
+    reg: 'REG',
+    entry: 'ENTRY',
+    card: 'CARD',
+    shar: 'SHAR',
+    savi: 'SAVI',
+    admn: 'ADMN',
+    s_fund: 'S/FUND',
+    fine: 'FINE',
+    unif: 'UNIF',
+    merr: 'MERR',
+    anniv: 'ANNIV',
+    sindi: 'SINDI',
+    meal: 'MEAL',
+    jikon: 'JIKON',
   };
 
   if (loading) return <div className="members-container"><p>Loading...</p></div>;
@@ -274,7 +292,7 @@ const Contributions = () => {
                 <th colSpan="2"></th>
                 {voteHeadColumns.map((col) => (
                   <th key={col} className="vote-head-col">
-                    {voteHeadLabels[col]}
+                    {voteHeadShortLabels[col]}
                   </th>
                 ))}
                 <th className="col-total">TOTAL</th>
