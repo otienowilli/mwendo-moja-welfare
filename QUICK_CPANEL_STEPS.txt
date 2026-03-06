@@ -1,0 +1,35 @@
+================================================================================
+                    QUICK cPANEL DEPLOYMENT STEPS
+================================================================================
+
+YOU ARE HERE: /home/gmooutas/public_html
+
+WHAT TO DO:
+
+1. Double-click "client" folder
+2. Double-click "dist" folder inside it
+3. Press Ctrl+A to select all files
+4. Right-click → Click "Cut"
+5. Click "public_html" in breadcrumb to go back
+6. Right-click in empty space → Click "Paste"
+7. Click "Move" when prompted
+8. Right-click "client" folder → Click "Delete"
+9. Right-click "frontend-dist.zip" → Click "Delete"
+
+================================================================================
+
+VERIFY:
+- index.html should be in public_html root
+- assets/ folder should be in public_html root
+- vite.svg should be in public_html root
+
+TEST:
+- Open: https://mwendomojawelfare.co.ke
+- Login: gregorykundu@gmail.com / kundu@mwendo2024
+
+================================================================================
+
+DONE! Your system is LIVE! 🚀
+
+================================================================================
+

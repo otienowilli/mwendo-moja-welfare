@@ -1,0 +1,50 @@
+================================================================================
+                    TERMINAL DEPLOYMENT COMMANDS
+================================================================================
+
+STEP 1: Open cPanel Terminal
+- Go to: https://mwendomojawelfare.co.ke:2083
+- Login: Williamsotie / 0nXk5{H{$TC
+- Click: Terminal
+
+================================================================================
+
+STEP 2: Copy & Paste This Command (ALL IN ONE):
+
+cd ~/public_html && \
+unzip -o frontend-dist.zip && \
+cp -r client/dist/* . && \
+rm -rf client && \
+rm -f frontend-dist.zip && \
+ls -la index.html assets/ vite.svg && \
+curl http://localhost:8000/api/health
+
+================================================================================
+
+WHAT THIS DOES:
+1. Navigate to public_html
+2. Extract frontend-dist.zip
+3. Copy files from client/dist/ to root
+4. Delete client folder
+5. Delete frontend-dist.zip
+6. Verify files are in root
+7. Check backend is running
+
+================================================================================
+
+EXPECTED OUTPUT:
+- Files listed: index.html, assets/, vite.svg
+- Backend response: {"status":"Server is running"}
+
+================================================================================
+
+STEP 3: Test in Browser
+- Open: https://mwendomojawelfare.co.ke
+- Login: gregorykundu@gmail.com / kundu@mwendo2024
+
+================================================================================
+
+DONE! Your system is LIVE! 🚀
+
+================================================================================
+
