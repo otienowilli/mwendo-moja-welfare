@@ -4,12 +4,15 @@ import api from '../services/api';
 import '../styles/Members.css';
 
 const Members = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Check if user is admin
+  const isAdmin = user?.role === 'admin';
   const [formData, setFormData] = useState({
     membership_card_number: '',
     national_id: '',
@@ -161,26 +164,28 @@ const Members = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
-        <button onClick={() => {
-          setEditingId(null);
-          setFormData({
-            membership_card_number: '',
-            national_id: '',
-            first_name: '',
-            middle_name: '',
-            last_name: '',
-            email: '',
-            designation: '',
-            phone_number: '',
-            sex: '',
-            date_of_birth: '',
-            residence: '',
-            role_in_group: '',
-          });
-          setShowForm(!showForm);
-        }} className="add-member-btn">
-          {showForm ? '✕ Cancel' : '+ Add New Member'}
-        </button>
+        {isAdmin && (
+          <button onClick={() => {
+            setEditingId(null);
+            setFormData({
+              membership_card_number: '',
+              national_id: '',
+              first_name: '',
+              middle_name: '',
+              last_name: '',
+              email: '',
+              designation: '',
+              phone_number: '',
+              sex: '',
+              date_of_birth: '',
+              residence: '',
+              role_in_group: '',
+            });
+            setShowForm(!showForm);
+          }} className="add-member-btn">
+            {showForm ? '✕ Cancel' : '+ Add New Member'}
+          </button>
+        )}
       </div>
 
       {showForm && (
@@ -318,10 +323,12 @@ const Members = () => {
                     <td>{member.phone_number || '-'}</td>
                     <td>{member.sex || '-'}</td>
                     <td><span className={`status-${member.status || 'active'}`}>{member.status || 'Active'}</span></td>
-                    <td className="actions-cell">
-                      <button onClick={() => handleEdit(member)} className="action-edit">Edit</button>
-                      <button onClick={() => handleDelete(member.id)} className="action-delete">Deactivate</button>
-                    </td>
+                    {isAdmin && (
+                      <td className="actions-cell">
+                        <button onClick={() => handleEdit(member)} className="action-edit">Edit</button>
+                        <button onClick={() => handleDelete(member.id)} className="action-delete">Deactivate</button>
+                      </td>
+                    )}
                   </tr>
                 );
               })}

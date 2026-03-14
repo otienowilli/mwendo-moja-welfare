@@ -165,6 +165,30 @@ const api = {
     return response.json();
   },
 
+  applyForLoan: async (data, token) => {
+    const response = await fetch(`${API_BASE_URL}/loans`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
+  sendLoanReminder: async (loanId, memberId, token) => {
+    const response = await fetch(`${API_BASE_URL}/loans/${loanId}/send-reminder`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ memberId }),
+    });
+    return response.json();
+  },
+
   // Vote Head endpoints
   getVoteHeads: async (token) => {
     const response = await fetch(`${API_BASE_URL}/vote-heads`, {

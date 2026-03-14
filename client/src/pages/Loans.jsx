@@ -12,6 +12,7 @@ const Loans = () => {
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [reminderSent, setReminderSent] = useState('');
   const [formData, setFormData] = useState({
     memberId: '',
     principal_amount: '',
@@ -19,8 +20,11 @@ const Loans = () => {
     loan_duration_months: '',
     purpose: '',
   });
-  const { logout, token } = useAuth();
+  const { logout, token, user } = useAuth();
   const navigate = useNavigate();
+
+  // Check if user is admin
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     if (token) {
@@ -72,7 +76,35 @@ const Loans = () => {
     navigate('/login');
   };
 
-  const filteredLoans = loans.filter(loan => {
+  const handleSendReminder = async (loanId, memberId) => {
+    if (!isAdmin) return;
+    try {
+      // Call API to send reminder
+      const response = await api.sendLoanReminder(loanId, memberId, token);
+      if (response.success) {
+        setReminderSent(`Reminder sent to member ${memberId}`);
+        setTimeout(() => setReminderSent(''), 3000);
+      } else {
+        setError(response.message || 'Failed to send reminder');
+      }
+    } catch (err) {
+      setError('Failed to send reminder');
+      console.error(err);
+    }
+  };
+
+  // Filter loans based on user role
+  const getVisibleLoans = () => {
+    if (isAdmin) {
+      // Admin sees all loans
+      return loans;
+    } else {
+      // Non-admin users only see approved and repaid loans (loan reports)
+      return loans.filter(loan => loan.status === 'approved' || loan.status === 'repaid');
+    }
+  };
+
+  const filteredLoans = getVisibleLoans().filter(loan => {
     const matchesSearch =
       (loan.member_id || loan.memberId || '').toString().includes(searchTerm) ||
       (loan.purpose || '').toLowerCase().includes(searchTerm.toLowerCase());
@@ -88,9 +120,10 @@ const Loans = () => {
     <div className="members-container">
       <div className="page-header">
         <h1>Loan Management</h1>
-        <p>Apply for loans and track repayments</p>
+        <p>{isAdmin ? 'Manage loan applications and track repayments' : 'Apply for loans and view your loan status'}</p>
       </div>
         {error && <div className="error-message">{error}</div>}
+        {reminderSent && <div className="success-message">{reminderSent}</div>}
 
         <div className="members-controls">
           <input
@@ -100,17 +133,19 @@ const Loans = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-            <option value="repaid">Repaid</option>
-          </select>
+          {isAdmin && (
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="filter-select"
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="repaid">Repaid</option>
+            </select>
+          )}
           <button className="add-member-btn" onClick={() => setShowForm(!showForm)}>
             {showForm ? '✕ Cancel' : '+ Apply for Loan'}
           </button>
@@ -175,6 +210,7 @@ const Loans = () => {
                   <th>Duration</th>
                   <th>Status</th>
                   <th>Purpose</th>
+                  {isAdmin && <th>Actions</th>}
                 </tr>
               </thead>
               <tbody>
@@ -186,6 +222,17 @@ const Loans = () => {
                     <td>{loan.loan_duration_months || loan.duration || 0} months</td>
                     <td><span className={`status-${loan.status}`}>{loan.status || 'Pending'}</span></td>
                     <td>{loan.purpose || 'N/A'}</td>
+                    {isAdmin && (
+                      <td>
+                        <button
+                          className="action-btn reminder-btn"
+                          onClick={() => handleSendReminder(loan.id || loan._id, loan.member_id || loan.memberId)}
+                          title="Send reminder to member about this loan"
+                        >
+                          📧 Remind
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
