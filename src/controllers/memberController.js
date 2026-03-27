@@ -70,9 +70,15 @@ const createMember = async (req, res) => {
       member_id: member.id,
     });
 
+    // Ensure full_name is included in response
+    const memberJson = member.toJSON ? member.toJSON() : member;
+
     res.status(201).json({
       message: 'Member created successfully',
-      member,
+      member: {
+        ...memberJson,
+        full_name: memberJson.full_name || full_name
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -85,9 +91,24 @@ const getAllMembers = async (req, res) => {
       where: { status: 'active' },
     });
 
+    // Explicitly map members to ensure full_name is always included
+    const mappedMembers = members.map(member => {
+      const memberJson = member.toJSON ? member.toJSON() : member;
+
+      // Ensure full_name is always present, fallback to constructed name
+      const full_name = memberJson.full_name ||
+        `${memberJson.first_name || ''} ${memberJson.middle_name ? memberJson.middle_name + ' ' : ''}${memberJson.last_name || ''}`.trim();
+
+      return {
+        ...memberJson,
+        full_name: full_name || 'Unknown'
+      };
+    });
+
     res.json({
-      data: members,
-      count: members.length,
+      members: mappedMembers,  // Return as 'members' to match frontend expectations
+      data: mappedMembers,     // Also include 'data' for backward compatibility
+      count: mappedMembers.length,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -104,7 +125,15 @@ const getMemberById = async (req, res) => {
       return res.status(404).json({ error: 'Member not found' });
     }
 
-    res.json(member);
+    // Ensure full_name is always included
+    const memberJson = member.toJSON ? member.toJSON() : member;
+    const full_name = memberJson.full_name ||
+      `${memberJson.first_name || ''} ${memberJson.middle_name ? memberJson.middle_name + ' ' : ''}${memberJson.last_name || ''}`.trim();
+
+    res.json({
+      ...memberJson,
+      full_name: full_name || 'Unknown'
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -123,9 +152,17 @@ const updateMember = async (req, res) => {
 
     await member.update(updates);
 
+    // Ensure full_name is always included in response
+    const memberJson = member.toJSON ? member.toJSON() : member;
+    const full_name = memberJson.full_name ||
+      `${memberJson.first_name || ''} ${memberJson.middle_name ? memberJson.middle_name + ' ' : ''}${memberJson.last_name || ''}`.trim();
+
     res.json({
       message: 'Member updated successfully',
-      member,
+      member: {
+        ...memberJson,
+        full_name: full_name || 'Unknown'
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -144,9 +181,17 @@ const deactivateMember = async (req, res) => {
 
     await member.update({ status: 'inactive' });
 
+    // Ensure full_name is always included in response
+    const memberJson = member.toJSON ? member.toJSON() : member;
+    const full_name = memberJson.full_name ||
+      `${memberJson.first_name || ''} ${memberJson.middle_name ? memberJson.middle_name + ' ' : ''}${memberJson.last_name || ''}`.trim();
+
     res.json({
       message: 'Member deactivated successfully',
-      member,
+      member: {
+        ...memberJson,
+        full_name: full_name || 'Unknown'
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

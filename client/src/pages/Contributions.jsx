@@ -27,7 +27,7 @@ const Contributions = () => {
   const isAdmin = user?.role === 'admin';
 
   // Vote head columns in order
-  const voteHeadColumns = ['reg', 'entry', 'card', 'shar', 'savi', 'admn', 's_fund', 'fine', 'unif', 'merr', 'anniv', 'sindi', 'meal', 'jikon'];
+  const voteHeadColumns = ['reg', 'entry', 'card', 'shar', 'savi', 'admn', 's_fund', 'fine', 'loans', 'interest', 'unif', 'merr', 'anniv', 'sindi', 'meal', 'jikon', 'beneev'];
   const voteHeadLabels = {
     reg: 'REGISTRATION FEES',
     entry: 'ENTRY FEE',
@@ -37,12 +37,15 @@ const Contributions = () => {
     admn: 'ADMIN COST',
     s_fund: 'SEED FUND',
     fine: 'FINES/PENALTIES',
+    loans: 'LOANS',
+    interest: 'INTEREST',
     unif: 'UNIFORM',
     merr: 'MERRY-GO',
     anniv: 'ANNIVERSARY',
     sindi: 'SINDIKIZA',
     meal: 'MEALS',
     jikon: 'PAMBA JIKONI',
+    beneev: 'BENEVOLENT',
   };
 
   useEffect(() => {
@@ -85,7 +88,7 @@ const Contributions = () => {
   const fetchMembers = async () => {
     try {
       const response = await api.getMembers(token);
-      setMembers(response.data || []);
+      setMembers(response.members || response.data || []);
     } catch (err) {
       console.error('Failed to fetch members');
     }
@@ -325,12 +328,15 @@ const Contributions = () => {
     admn: 'ADMN',
     s_fund: 'S/FUND',
     fine: 'FINE',
+    loans: 'LOANS',
+    interest: 'INT',
     unif: 'UNIF',
     merr: 'MERR',
     anniv: 'ANNIV',
     sindi: 'SINDI',
     meal: 'MEAL',
     jikon: 'JIKON',
+    beneev: 'BENEEV',
   };
 
   if (loading) return <div className="members-container"><p>Loading...</p></div>;
